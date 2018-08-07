@@ -12,6 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import ru.belyaev.vitaliy.albumcheck.domain.Album;
+
 public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumVH> {
 
     private List<Album> albums;
@@ -19,7 +21,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumVH> {
 
 
     interface AlbumOnClickHandler {
-        void onClick(int albumIndex);
+        void onClick(int position, int albumId);
 
     }
 
@@ -83,7 +85,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumVH> {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    onClickHandler.onClick(position);
+                    onClickHandler.onClick(position, albums.get(position).getCollectionId());
                 }
             });
         }

@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import ru.belyaev.vitaliy.albumcheck.domain.Album;
+
 public class AlbumResponse {
 
     @SerializedName("resultCount")

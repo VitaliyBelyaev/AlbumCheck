@@ -1,4 +1,4 @@
-package ru.belyaev.vitaliy.albumcheck;
+package ru.belyaev.vitaliy.albumcheck.domain;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

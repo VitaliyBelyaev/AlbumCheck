@@ -1,44 +1,61 @@
 package ru.belyaev.vitaliy.albumcheck;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.Menu;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.belyaev.vitaliy.albumcheck.domain.Album;
 
 public class MainActivity extends AppCompatActivity
         implements AlbumsAdapter.AlbumOnClickHandler {
 
-    private EditText queryEditText;
-    private Button searchButton;
     private RecyclerView recyclerView;
     private AlbumsAdapter albumsAdapter;
+    private Toolbar toolbar;
     public static final String LOG_TAG = MainActivity.class.getName();
+    public static final String ALBUM_ID = "album_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        queryEditText = findViewById(R.id.et_query);
-        searchButton = findViewById(R.id.button_search);
-        initRecyclerView();
+        handleIntent(getIntent());
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchAlbums(queryEditText.getText().toString());
-            }
-        });
+        toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        initRecyclerView();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(getIntent());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        return true;
     }
 
     private void searchAlbums(String query) {
@@ -62,9 +79,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(int albumIndex) {
-
+    public void onClick(int position, int albumId) {
+        AlbumActivity.start(this, albumId);
     }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchAlbums(query);
+        }
+    }
+
 
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.rv_search_results);
