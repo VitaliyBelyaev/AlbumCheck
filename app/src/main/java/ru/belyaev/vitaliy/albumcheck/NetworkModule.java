@@ -29,9 +29,8 @@ import ru.belyaev.vitaliy.albumcheck.domain.Track;
 
 public class NetworkModule {
 
-    public static final String API_HOST = "https://itunes.apple.com/";
+    static final String API_HOST = "https://itunes.apple.com/";
     private static final long HTTP_CACHE_SIZE = 1024 * 1024 * 24L; // 24 MB
-
     private ItunesApi itunesApi;
 
     public NetworkModule(Context context) {
@@ -73,11 +72,10 @@ public class NetworkModule {
                 .build();
     }
 
-    public Gson getCustomGson() {
-        Gson gson = new GsonBuilder()
+    private Gson getCustomGson() {
+        return new GsonBuilder()
                 .registerTypeAdapter(AlbumResponse.class, new AlbumResponseDeserializer())
                 .create();
-        return gson;
     }
 
     public class AlbumResponseDeserializer implements JsonDeserializer<AlbumResponse> {

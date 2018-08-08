@@ -11,7 +11,7 @@ import android.support.v7.app.AlertDialog;
 public class SortDialogFragment extends DialogFragment {
 
     public interface SortDialogListener {
-        public void onSortItemClick(int sortMode);
+        void onSortItemClick(int sortMode);
     }
 
     SortDialogListener sortDialogListener;

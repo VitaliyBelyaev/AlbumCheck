@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">AlbumCheck</string>
+
+    <string name="search_title">Поиск</string>
+    <string name="sort_title">Сортировка</string>
+    <string name="open_in_browser">Открыть в браузере</string>
+    <string name="search_hint">Альбом или исполнитель</string>
+
+
+    <string name="default_order">По умолчанию</string>
+    <string name="date">По дате(сначала старые)</string>
+    <string name="date_reverse">По дате(сначала новые)</string>
+    <string name="alphabetically">Алфавитный порядок</string>
+    <string name="alphabetically_reverse">Обратный алфавитный порядок</string>
+
+    <string name="tracks">Количество песен:</string>
+</resources>

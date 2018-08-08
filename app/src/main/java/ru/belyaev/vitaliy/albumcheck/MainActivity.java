@@ -23,37 +23,31 @@ import ru.belyaev.vitaliy.albumcheck.domain.Album;
 
 public class MainActivity extends AppCompatActivity
         implements AlbumsAdapter.AlbumOnClickHandler,
-        SortDialogFragment.SortDialogListener{
+        SortDialogFragment.SortDialogListener {
 
-    private RecyclerView recyclerView;
-    private AlbumsAdapter albumsAdapter;
-    private Toolbar toolbar;
-    private SearchView searchView;
-    private Menu menu;
     public static final String LOG_TAG = MainActivity.class.getName();
     public static final String ALBUM_ID = "album_id";
+    private AlbumsAdapter albumsAdapter;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        initRecyclerView();
+
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             handleSearchIntent(intent);
         }
-
-        toolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-        initRecyclerView();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            SearchManager searchManager =
-                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
             handleSearchIntent(intent);
         }
         super.onNewIntent(intent);
@@ -63,10 +57,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.options_menu, menu);
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
 
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
@@ -78,7 +70,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort:
-                showSortDialog();
+                if (albumsAdapter.hasData()) {
+                    showSortDialog();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -101,9 +95,6 @@ public class MainActivity extends AppCompatActivity
                         List<Album> albums = albumResponse.getAlbums();
                         albumsAdapter.setDefaultOrderedAlbums(albums);
                         albumsAdapter.defaultOrder();
-
-                        //set sort icon visible only when have data in albumsAdapter
-                        menu.findItem(R.id.sort).setVisible(true);
                     }
                 } else {
                     Log.e(LOG_TAG, "Error with code: " + response.code());
@@ -120,24 +111,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(int position, int albumId) {
         AlbumActivity.start(this, albumId);
-    }
-
-    private void handleSearchIntent(Intent intent) {
-        String query = intent.getStringExtra(SearchManager.QUERY);
-        searchAlbums(query);
-    }
-
-
-    private void initRecyclerView() {
-        recyclerView = findViewById(R.id.rv_search_results);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        albumsAdapter = new AlbumsAdapter(this);
-        recyclerView.setAdapter(albumsAdapter);
-    }
-
-
-    private App getApp() {
-        return ((App) getApplication());
     }
 
     @Override
@@ -159,5 +132,22 @@ public class MainActivity extends AppCompatActivity
                 albumsAdapter.sortByName(true);
                 break;
         }
+    }
+
+    private void handleSearchIntent(Intent intent) {
+        String query = intent.getStringExtra(SearchManager.QUERY);
+        searchAlbums(query);
+    }
+
+    private void initRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.rv_search_results);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        albumsAdapter = new AlbumsAdapter(this);
+        recyclerView.setAdapter(albumsAdapter);
+    }
+
+
+    private App getApp() {
+        return ((App) getApplication());
     }
 }

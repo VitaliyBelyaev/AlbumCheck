@@ -15,15 +15,24 @@ import ru.belyaev.vitaliy.albumcheck.domain.Track;
 
 public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.TrackVH> {
 
+    class TrackVH extends RecyclerView.ViewHolder {
+
+        TextView trackNumber;
+        TextView trackName;
+        TextView artist;
+        TextView duration;
+
+        TrackVH(View itemView) {
+            super(itemView);
+
+            trackNumber = itemView.findViewById(R.id.tv_track_number);
+            trackName = itemView.findViewById(R.id.tv_track_name);
+            artist = itemView.findViewById(R.id.tv_track_artist);
+            duration = itemView.findViewById(R.id.tv_track_duration);
+        }
+    }
+
     private List<Track> tracks;
-
-    public TracksAdapter() {
-    }
-
-    public void replaceWith(List<Track> tracks) {
-        this.tracks = tracks;
-        notifyDataSetChanged();
-    }
 
     @NonNull
     @Override
@@ -51,25 +60,14 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.TrackVH> {
         return 0;
     }
 
-    class TrackVH extends RecyclerView.ViewHolder{
 
-        TextView trackNumber;
-        TextView trackName;
-        TextView artist;
-        TextView duration;
-
-        TrackVH(View itemView){
-            super(itemView);
-
-            trackNumber = itemView.findViewById(R.id.tv_track_number);
-            trackName = itemView.findViewById(R.id.tv_track_name);
-            artist = itemView.findViewById(R.id.tv_track_artist);
-            duration = itemView.findViewById(R.id.tv_track_duration);
-        }
+    public void replaceWith(List<Track> tracks) {
+        this.tracks = tracks;
+        notifyDataSetChanged();
     }
 
-    private String formatTime(int timeInMillis){
-        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss",Locale.getDefault());
+    private String formatTime(int timeInMillis) {
+        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss", Locale.getDefault());
         return sdf.format(timeInMillis);
     }
 }

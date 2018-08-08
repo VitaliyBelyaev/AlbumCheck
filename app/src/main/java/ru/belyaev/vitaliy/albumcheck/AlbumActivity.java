@@ -35,16 +35,16 @@ import static ru.belyaev.vitaliy.albumcheck.MainActivity.ALBUM_ID;
 
 public class AlbumActivity extends AppCompatActivity {
 
+    public static final String LOG_TAG = AlbumActivity.class.getName();
+
+    private RecyclerView recyclerView;
     private ImageView albumImage;
     private TextView artistTextView;
     private TextView trackCountTextView;
     private TextView releaseDateTextView;
     private Toolbar toolbar;
     private Track track;
-    public static final String LOG_TAG = AlbumActivity.class.getName();
-
     private TracksAdapter tracksAdapter;
-    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,6 @@ public class AlbumActivity extends AppCompatActivity {
                         tracksAdapter.replaceWith(tracks);
 
                     }
-
                 } else {
                     Log.e(LOG_TAG, "Error with code: " + response.code());
                 }
@@ -76,7 +75,7 @@ public class AlbumActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<AlbumResponse> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }
@@ -91,11 +90,11 @@ public class AlbumActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent i = new Intent(this, MainActivity.class);
+                Intent i = NavUtils.getParentActivityIntent(this);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                NavUtils.navigateUpTo(getParent(), i);
-
+                NavUtils.navigateUpTo(this, i);
                 return true;
+
             case R.id.action_open_in_browser:
                 Uri webpage = Uri.parse(track.getCollectionViewUrl());
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
@@ -106,6 +105,7 @@ public class AlbumActivity extends AppCompatActivity {
 
                 CustomTabsIntent customTabsIntent = builder.build();
                 customTabsIntent.launchUrl(this, webpage);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
