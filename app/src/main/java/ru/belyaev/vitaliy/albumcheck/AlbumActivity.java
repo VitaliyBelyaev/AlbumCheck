@@ -2,9 +2,18 @@ package ru.belyaev.vitaliy.albumcheck;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,39 +29,46 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ru.belyaev.vitaliy.albumcheck.domain.Album;
+import ru.belyaev.vitaliy.albumcheck.domain.Track;
 
 import static ru.belyaev.vitaliy.albumcheck.MainActivity.ALBUM_ID;
 
 public class AlbumActivity extends AppCompatActivity {
 
     private ImageView albumImage;
-    private TextView titleTextView;
     private TextView artistTextView;
     private TextView trackCountTextView;
-    private TextView primaryGenreTextView;
     private TextView releaseDateTextView;
-    private TextView copyrightTextView;
+    private Toolbar toolbar;
+    private Track track;
     public static final String LOG_TAG = AlbumActivity.class.getName();
 
-    private Album album;
+    private TracksAdapter tracksAdapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
 
-        setViews();
+        initializeUI();
+
         int albumId = getIntent().getIntExtra(ALBUM_ID, 0);
 
         getApp().getItunesApi().getAlbum(albumId).enqueue(new Callback<AlbumResponse>() {
             @Override
             public void onResponse(Call<AlbumResponse> call, Response<AlbumResponse> response) {
                 if (response.code() == 200) {
-                    List<Album> albums = response.body().getAlbums();
-                    album = albums.get(0);
+                    AlbumResponse albumResponse = response.body();
+                    if (!albumResponse.isAlbums()) {
+                        List<Track> tracks = albumResponse.getTracks();
+                        track = tracks.get(0);
+                        setAlbum(track);
+                        getSupportActionBar().setTitle(track.getCollectionName());
+                        tracksAdapter.replaceWith(tracks);
 
-                    setAlbum();
+                    }
+
                 } else {
                     Log.e(LOG_TAG, "Error with code: " + response.code());
                 }
@@ -63,45 +79,75 @@ public class AlbumActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-
     }
 
-    private void setViews() {
-        albumImage = findViewById(R.id.album_image_detailed);
-        titleTextView = findViewById(R.id.tv_album_title_detailed);
-        artistTextView = findViewById(R.id.tv_album_artist_detailed);
-        trackCountTextView = findViewById(R.id.tv_track_count_detailed);
-        primaryGenreTextView = findViewById(R.id.tv_primary_genre);
-        releaseDateTextView = findViewById(R.id.tv_release_date);
-        copyrightTextView = findViewById(R.id.tv_copyright);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.album_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
-    private void setAlbum() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent i = new Intent(this, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                NavUtils.navigateUpTo(getParent(), i);
+
+                return true;
+            case R.id.action_open_in_browser:
+                Uri webpage = Uri.parse(track.getCollectionViewUrl());
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+
+                builder
+                        .setToolbarColor(ContextCompat.getColor(this, R.color.primaryColor))
+                        .addDefaultShareMenuItem();
+
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(this, webpage);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setAlbum(Track track) {
+
         Picasso.get()
-                .load(album.getArtworkUrl100())
+                .load(track.getArtworkUrl100())
                 .into(albumImage);
 
-        titleTextView.setText(album.getCollectionName());
-        artistTextView.setText(album.getArtistName());
+        artistTextView.setText(track.getArtistName());
+        String numberOfTracks = getString(R.string.tracks) + String.valueOf(track.getTrackCount());
+        trackCountTextView.setText(numberOfTracks);
+        releaseDateTextView.setText(formatDate(track.getReleaseDate()));
+    }
 
-        String tracks = String.valueOf(album.getTrackCount())+" tracks";
-        trackCountTextView.setText(tracks);
-        primaryGenreTextView.setText(album.getPrimaryGenreName());
-        try{
+    private void initializeUI() {
+        albumImage = findViewById(R.id.album_image_detailed);
+        artistTextView = findViewById(R.id.tv_album_artist_detailed);
+        trackCountTextView = findViewById(R.id.tv_track_count_detailed);
+        releaseDateTextView = findViewById(R.id.tv_release_date);
+
+        toolbar = findViewById(R.id.album_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        recyclerView = findViewById(R.id.rv_track_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tracksAdapter = new TracksAdapter();
+        recyclerView.setAdapter(tracksAdapter);
+    }
+
+    private String formatDate(String dateString) {
+        try {
             DateFormat inputSdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
             DateFormat outputSdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-            Date date = inputSdf.parse(album.getReleaseDate());
-            String releaseDate = outputSdf.format(date);
-            Log.i("Date",releaseDate);
-            releaseDateTextView.setText(releaseDate);
-        } catch (ParseException e){
+            Date date = inputSdf.parse(dateString);
+            return outputSdf.format(date);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        copyrightTextView.setText(album.getCopyright());
+        return null;
     }
 
     public static void start(Activity activity, int albumId) {

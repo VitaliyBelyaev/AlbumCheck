@@ -10,13 +10,16 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ru.belyaev.vitaliy.albumcheck.domain.Album;
 
 public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumVH> {
 
-    private List<Album> albums;
+    private ArrayList<Album> albums;
+    private ArrayList<Album> defaultOrder;
     private AlbumOnClickHandler onClickHandler;
 
 
@@ -29,8 +32,37 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.AlbumVH> {
         this.onClickHandler = onClickHandler;
     }
 
+    public void setDefaultOrderedAlbums(List<Album> albums){
+        this.defaultOrder = (ArrayList<Album>) albums;
+    }
+
     public void replaceWith(List<Album> albums) {
-        this.albums = albums;
+        this.albums = (ArrayList<Album>) albums;
+        notifyDataSetChanged();
+    }
+
+    public void sortByName(Boolean reverseOrder) {
+            ArrayList<Album> sortedAlbums = new ArrayList<>(albums);
+            Collections.sort(sortedAlbums, Album.sortByName);
+            if (reverseOrder) {
+                Collections.reverse(sortedAlbums);
+            }
+            replaceWith(sortedAlbums);
+            notifyDataSetChanged();
+    }
+
+    public void sortByDate(Boolean reverseOrder) {
+            ArrayList<Album> sortedAlbums= new ArrayList<>(albums);
+            Collections.sort(sortedAlbums, Album.sortByDate);
+            if (reverseOrder) {
+                Collections.reverse(sortedAlbums);
+            }
+            replaceWith(sortedAlbums);
+            notifyDataSetChanged();
+    }
+
+    public void defaultOrder() {
+        replaceWith(defaultOrder);
         notifyDataSetChanged();
     }
 

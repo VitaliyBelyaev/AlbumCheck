@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="sort_mode_array">
+        <item>@string/default_order</item>
+        <item>@string/date</item>
+        <item>@string/date_reverse</item>
+        <item>@string/alphabetically</item>
+        <item>@string/alphabetically_reverse</item>
+    </array>
+</resources>

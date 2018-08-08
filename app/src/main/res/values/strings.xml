@@ -1,6 +1,17 @@
 <resources>
-    <string name="app_name">AlbumCheck</string>
+    <string name="app_name" translatable="false">AlbumCheck</string>
 
     <string name="search_title">Search</string>
+    <string name="sort_title">Sort</string>
+    <string name="open_in_browser">Open in browser</string>
     <string name="search_hint">Album or artist name</string>
+
+
+    <string name="default_order">Default</string>
+    <string name="date">By date</string>
+    <string name="date_reverse">By date(reverse)</string>
+    <string name="alphabetically">Alphabetically</string>
+    <string name="alphabetically_reverse">Alphabetically(reverse)</string>
+
+    <string name="tracks">Number of tracks: </string>
 </resources>

@@ -3,6 +3,13 @@ package ru.belyaev.vitaliy.albumcheck.domain;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
+
 public class Album {
 
     @SerializedName("wrapperType")
@@ -84,6 +91,34 @@ public class Album {
     @SerializedName("primaryGenreName")
     @Expose
     private String primaryGenreName;
+
+    public static Comparator<Album> sortByName = new Comparator<Album>() {
+
+        @Override
+        public int compare(Album a1, Album a2) {
+            String albumName1 = a1.getCollectionName().toUpperCase();
+            String albumName2 = a2.getCollectionName().toUpperCase();
+
+            return albumName1.compareTo(albumName2);
+        }
+    };
+
+    public static Comparator<Album> sortByDate = new Comparator<Album>() {
+
+        @Override
+        public int compare(Album a1, Album a2) {
+            DateFormat inputSdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+            try {
+                Date date1 = inputSdf.parse(a1.getReleaseDate());
+                Date date2 = inputSdf.parse(a2.getReleaseDate());
+
+                return date1.compareTo(date2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        }
+    };
 
     public String getWrapperType() {
         return wrapperType;

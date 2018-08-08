@@ -8,4 +8,10 @@
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
+    <item android:id="@+id/sort"
+        android:title="@string/sort_title"
+        android:icon="@drawable/ic_action_sort"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+
 </menu>

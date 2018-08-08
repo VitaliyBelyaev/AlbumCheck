@@ -24,6 +24,7 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${project.property('supportLib.version')}"
     implementation "com.android.support:cardview-v7:${project.property('supportLib.version')}"
     implementation "com.android.support:customtabs:${project.property('supportLib.version')}"
+    implementation "com.android.support:design:${project.property('supportLib.version')}"
     implementation "com.squareup.picasso:picasso:${project.property('picasso.version')}"
     implementation "com.squareup.retrofit2:retrofit:${project.property('retrofit.version')}"
     implementation "com.squareup.retrofit2:converter-gson:${project.property('retrofit.version')}"
