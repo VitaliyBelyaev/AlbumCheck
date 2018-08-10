@@ -29,6 +29,7 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.belyaev.vitaliy.albumcheck.domain.Album;
 import ru.belyaev.vitaliy.albumcheck.domain.Track;
 
 import static ru.belyaev.vitaliy.albumcheck.MainActivity.ALBUM_ID;
@@ -43,7 +44,7 @@ public class AlbumActivity extends AppCompatActivity {
     private TextView trackCountTextView;
     private TextView releaseDateTextView;
     private Toolbar toolbar;
-    private Track track;
+    private Album album;
     private TracksAdapter tracksAdapter;
 
     @Override
@@ -62,9 +63,9 @@ public class AlbumActivity extends AppCompatActivity {
                     AlbumResponse albumResponse = response.body();
                     if (!albumResponse.isAlbums()) {
                         List<Track> tracks = albumResponse.getTracks();
-                        track = tracks.get(0);
-                        setAlbum(track);
-                        getSupportActionBar().setTitle(track.getCollectionName());
+                        album = albumResponse.getAlbum();
+                        setAlbum(album);
+                        getSupportActionBar().setTitle(album.getCollectionName());
                         tracksAdapter.replaceWith(tracks);
 
                     }
@@ -96,7 +97,7 @@ public class AlbumActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_open_in_browser:
-                Uri webpage = Uri.parse(track.getCollectionViewUrl());
+                Uri webpage = Uri.parse(album.getCollectionViewUrl());
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
 
                 builder
@@ -110,16 +111,16 @@ public class AlbumActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setAlbum(Track track) {
+    private void setAlbum(Album album) {
 
         Picasso.get()
-                .load(track.getArtworkUrl100())
+                .load(album.getArtworkUrl100())
                 .into(albumImage);
 
-        artistTextView.setText(track.getArtistName());
-        String numberOfTracks = getString(R.string.tracks) + String.valueOf(track.getTrackCount());
+        artistTextView.setText(album.getArtistName());
+        String numberOfTracks = getString(R.string.tracks) + String.valueOf(album.getTrackCount());
         trackCountTextView.setText(numberOfTracks);
-        releaseDateTextView.setText(formatDate(track.getReleaseDate()));
+        releaseDateTextView.setText(formatDate(album.getReleaseDate()));
     }
 
     private void initializeUI() {

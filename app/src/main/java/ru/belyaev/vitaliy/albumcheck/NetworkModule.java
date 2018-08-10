@@ -87,12 +87,16 @@ public class NetworkModule {
 
             for (Map.Entry<String, JsonElement> elementJson : jsonObject.entrySet()) {
                 if (elementJson.getKey().equals("resultCount")) {
+                    if (elementJson.getValue().getAsInt() == 0) {
+                        return albumResponse;
+                    }
                     albumResponse.setResultCount(elementJson.getValue().getAsInt());
                 } else {
                     JsonArray data = elementJson.getValue().getAsJsonArray();
 
                     //check if the 2nd element in result array is collection
-                    if (data.get(1).getAsJsonObject().get("wrapperType").getAsString().equals("collection")) {
+                    if (albumResponse.getResultCount() < 2
+                            || data.get(1).getAsJsonObject().get("wrapperType").getAsString().equals("collection")) {
                         List<Album> albums = new ArrayList<>();
                         for (JsonElement element : data) {
                             albums.add(gson.fromJson(element, Album.class));
@@ -100,6 +104,7 @@ public class NetworkModule {
                         albumResponse.setIsAlbums(true);
                         albumResponse.setAlbums(albums);
                     } else {
+                        albumResponse.setAlbum(gson.fromJson(data.get(0), Album.class));
                         data.remove(0);
                         List<Track> tracks = new ArrayList<>();
                         for (JsonElement element : data) {

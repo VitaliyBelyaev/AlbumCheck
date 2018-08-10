@@ -10,6 +10,7 @@ public class AlbumResponse {
     private Integer resultCount;
     private List<Album> albums = null;
     private  List<Track> tracks = null;
+    private Album album = null;
     private boolean isAlbums = true;
 
     public Integer getResultCount() {
@@ -41,6 +42,18 @@ public class AlbumResponse {
     }
 
     public void setIsAlbums(boolean albums) {
+        isAlbums = albums;
+    }
+
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(Album album) {
+        this.album = album;
+    }
+
+    public void setAlbums(boolean albums) {
         isAlbums = albums;
     }
 }

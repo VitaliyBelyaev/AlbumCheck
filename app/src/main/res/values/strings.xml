@@ -1,17 +1,24 @@
 <resources>
     <string name="app_name" translatable="false">AlbumCheck</string>
 
+    <!--App bar-->
     <string name="search_title">Search</string>
     <string name="sort_title">Sort</string>
     <string name="open_in_browser">Open in browser</string>
     <string name="search_hint">Album or artist name</string>
 
-
+    <!--Strings for sorting-->
     <string name="default_order">Default</string>
     <string name="date">By date</string>
     <string name="date_reverse">By date(reverse)</string>
     <string name="alphabetically">Alphabetically</string>
     <string name="alphabetically_reverse">Alphabetically(reverse)</string>
 
+    <!--Views-->
     <string name="tracks">Number of tracks:</string>
+    <string name="error_message">Error occurred, try again</string>
+    <string name="empty_message">Nothing to show yet, type your search query</string>
+    <string name="search_null_result">We can\'t find anything, try another query</string>
+    <string name="no_internet_conn">No internet connection, turn on internet and try again</string>
+
 </resources>

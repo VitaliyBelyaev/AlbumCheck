@@ -22,6 +22,25 @@
     </android.support.design.widget.AppBarLayout>
 
 
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:fontFamily="sans-serif-condensed"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_search_results"
         android:layout_width="match_parent"

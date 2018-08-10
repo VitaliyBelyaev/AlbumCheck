@@ -15,4 +15,8 @@
     <string name="alphabetically_reverse">Обратный алфавитный порядок</string>
 
     <string name="tracks">Количество песен:</string>
+    <string name="error_message">Ошибка, попробуйте еще раз</string>
+    <string name="empty_message">Нечего показывать пока, введите свой запрос</string>
+    <string name="search_null_result">Ничего не найдено, попробуйте другой запрос</string>
+    <string name="no_internet_conn">Нет интернет соединения, включите интернет и попробуйте снова</string>
 </resources>
